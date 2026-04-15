@@ -1,116 +1,90 @@
 #include <iostream>
-#include <string>
 using namespace std;
 
-struct Node {
-    string title;
-    string author;
-    int year;
-    Node* prev;
-    Node* next;
+const int MAX = 100;
+
+class Stack {
+private:
+    int arr[MAX];
+    int top;
+
+public:
+    Stack() {
+        top = -1;
+    }
+
+    bool isEmpty() {
+        return top == -1;
+    }
+
+    bool isFull() {
+        return top == MAX - 1;
+    }
+
+    void push(int x) {
+        if (isFull()) {
+            cout << "Stek is full\n";
+            return;
+        }
+        arr[++top] = x;
+    }
+
+    int pop() {
+        if (isEmpty()) {
+            cout << "Stek is empty\n";
+            return -1;
+        }
+        return arr[top--];
+    }
+
+    void show() {
+        if (isEmpty()) {
+            cout << "Stek is empty\n";
+            return;
+        }
+
+        cout << "stek elements:\n";
+        for (int i = top; i >= 0; i--) {
+            cout << arr[i] << " ";
+        }
+        cout << endl;
+    }
+
+    double average() {
+        if (isEmpty()) return 0;
+
+        int sum = 0;
+        for (int i = 0; i <= top; i++) {
+            sum += arr[i];
+        }
+        return (double)sum / (top + 1);
+    }
+
+    void clear() {
+        top = -1;
+    }
 };
 
-
-void addNode(Node*& head, Node*& tail, string t, string a, int y) {
-    Node* newNode = new Node{t, a, y, NULL, NULL};
-
-    if (!head) {
-        head = tail = newNode;
-    } else {
-        tail->next = newNode;
-        newNode->prev = tail;
-        tail = newNode;
-    }
-}
-
-
-void printForward(Node* head) {
-    Node* temp = head;
-    while (temp) {
-        cout << temp->title << " | " << temp->author << " | " << temp->year << endl;
-        temp = temp->next;
-    }
-}
-
-
-void printBackward(Node* tail) {
-    Node* temp = tail;
-    while (temp) {
-        cout << temp->title << " | " << temp->author << " | " << temp->year << endl;
-        temp = temp->prev;
-    }
-}
-
-
-void mergeLists(Node*& head1, Node*& tail1, Node*& head2, Node*& tail2) {
-    if (!head1) {
-        head1 = head2;
-        tail1 = tail2;
-    } else if (head2) {
-        tail1->next = head2;
-        head2->prev = tail1;
-        tail1 = tail2;
-    }
-}
-
-
-void deleteList(Node*& head) {
-    Node* temp;
-    while (head) {
-        temp = head;
-        head = head->next;
-        delete temp;
-    }
-}
-
 int main() {
-    Node *head1 = NULL, *tail1 = NULL;
-    Node *head2 = NULL, *tail2 = NULL;
+    Stack s;
+    int n, x;
 
-    int n, m;
-    cout << "Enter n: ";
+    cout << "Enter number of grades: ";
     cin >> n;
 
-    
     for (int i = 0; i < n; i++) {
-        string t, a;
-        int y;
-        cout << "Book " << i + 1 << ":\n";
-        cin >> t >> a >> y;
-        addNode(head1, tail1, t, a, y);
+        cout << "Enter grade " << i + 1 << ": ";
+        cin >> x;
+        s.push(x);
     }
 
-    cout << "Enter m: ";
-    cin >> m;
+    s.show();
 
-    
-    for (int i = 0; i < m; i++) {
-        string t, a;
-        int y;
-        cout << "Book " << i + 1 << ":\n";
-        cin >> t >> a >> y;
-        addNode(head2, tail2, t, a, y);
-    }
+    cout << "Average grade: " << s.average() << endl;
 
-    
-    cout << "\nList 1 forward:\n";
-    printForward(head1);
-    cout << "List 1 backward:\n";
-    printBackward(tail1);
-
-    cout << "\nList 2 forward:\n";
-    printForward(head2);
-    cout << "List 2 backward:\n";
-    printBackward(tail2);
-
-    
-    mergeLists(head1, tail1, head2, tail2);
-
-    cout << "\nMerged list:\n";
-    printForward(head1);
-
-    
-    deleteList(head1);
+    s.clear();
+    cout << "After delete:\n";
+    s.show();
 
     return 0;
 }
