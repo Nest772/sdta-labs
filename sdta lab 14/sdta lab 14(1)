@@ -1,0 +1,42 @@
+#include <iostream>
+#include <array>
+#include <algorithm>
+using namespace std;
+
+int main() 
+{
+    array<int, 10> grades;
+    int sum = 0;
+
+    cout << "Enter 10 grades:\n";
+    for (int i = 0; i < 10; i++) {
+        cin >> grades[i];
+        sum += grades[i];
+    }
+
+    double avg = sum / 10.0;
+
+    int max_val = *max_element(grades.begin(), grades.end());
+    int min_val = *min_element(grades.begin(), grades.end());
+
+    int above_avg = 0;
+    for (int x : grades) {
+        if (x > avg) above_avg++;
+    }
+
+    sort(grades.begin(), grades.end());
+
+    cout << "Average: " << avg << endl;
+    cout << "Max: " << max_val << endl;
+    cout << "Min: " << min_val << endl;
+    cout << "Above average count: " << above_avg << endl;
+
+    cout << "Sorted ascending:\n";
+    for (int x : grades) cout << x << " ";
+
+    cout << "\nSorted descending:\n";
+    reverse(grades.begin(), grades.end());
+    for (int x : grades) cout << x << " ";
+
+    return 0;
+}
