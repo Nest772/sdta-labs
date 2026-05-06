@@ -1,8 +1,6 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include <cstdlib>
-#include <ctime>
 
 using namespace std;
 
@@ -13,32 +11,28 @@ struct Product {
     double calories;
 };
 
-
 double calculateCalories(const double n[3]) {
     return 4 * n[0] + 9 * n[1] + 4 * n[2];
 }
 
 
-vector<Product> inputProducts(int n) {
-    vector<Product> arr(n);
+vector<Product> inputProducts() {
+    vector<Product> arr = {
+        {"Apple", 20, {1, 0.5, 14}},
+        {"Bread", 25, {8, 1, 50}},
+        {"Milk", 30, {3, 3, 5}},
+        {"Meat", 80, {20, 15, 0}},
+        {"Fish", 70, {18, 10, 0}},
+        {"Rice", 40, {7, 1, 60}}
+    };
 
-    string names[] = {"Apple", "Bread", "Milk", "Meat", "Fish", "Rice"};
-
-    for (int i = 0; i < n; i++) {
-        arr[i].name = names[rand() % 6];
-
-        arr[i].price = 10 + rand() % 90; 
-
-        for (int j = 0; j < 3; j++) {
-            arr[i].nutrients[j] = rand() % 20; 
-        }
-
-        arr[i].calories = calculateCalories(arr[i].nutrients);
+    
+    for (auto &p : arr) {
+        p.calories = calculateCalories(p.nutrients);
     }
 
     return arr;
 }
-
 
 void printProducts(const vector<Product>& arr) {
     for (const auto& p : arr) {
@@ -53,7 +47,6 @@ void printProducts(const vector<Product>& arr) {
     }
     cout << endl;
 }
-
 
 void selectionSortByCalories(vector<Product>& arr) {
     int n = arr.size();
@@ -71,7 +64,6 @@ void selectionSortByCalories(vector<Product>& arr) {
     }
 }
 
-
 void gnomeSortByPrice(vector<Product>& arr) {
     int i = 0;
     int n = arr.size();
@@ -86,7 +78,6 @@ void gnomeSortByPrice(vector<Product>& arr) {
     }
 }
 
-
 vector<Product> searchByPrice(const vector<Product>& arr, double price) {
     vector<Product> result;
 
@@ -100,15 +91,9 @@ vector<Product> searchByPrice(const vector<Product>& arr, double price) {
 }
 
 int main() {
-    srand(time(0));
+    vector<Product> products = inputProducts();
 
-    int n;
-    cout << "number of products: ";
-    cin >> n;
-
-    vector<Product> products = inputProducts(n);
-
-    cout << "\n=== Innate Array ===\n";
+    cout << "\n=== Initial Array ===\n";
     printProducts(products);
 
     vector<Product> sortedCalories = products;
@@ -123,11 +108,13 @@ int main() {
     cout << "\n=== Sort by price ===\n";
     printProducts(sortedPrice);
 
+    
     double targetPrice;
     cout << "\nEnter price to search: ";
     cin >> targetPrice;
 
     vector<Product> found = searchByPrice(products, targetPrice);
+
 
     cout << "\n=== Search result ===\n";
     if (found.empty()) {
@@ -135,6 +122,5 @@ int main() {
     } else {
         printProducts(found);
     }
-
     return 0;
 }
