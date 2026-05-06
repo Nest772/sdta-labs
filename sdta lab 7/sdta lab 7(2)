@@ -1,1 +1,142 @@
+#include <iostream>
+#include <string>
+using namespace std;
 
+struct Worker {
+    string surname;
+    string department;
+    double salary;
+    Worker* next;
+    Worker* prev;
+};
+
+
+void addEnd(Worker*& head, Worker*& tail, string s, string d, double sal) {
+    Worker* temp = new Worker{s, d, sal, NULL, NULL};
+
+    if (!head) {
+        head = tail = temp;
+    } else {
+        tail->next = temp;
+        temp->prev = tail;
+        tail = temp;
+    }
+}
+
+
+void printForward(Worker* head) {
+    Worker* cur = head;
+    while (cur) {
+        cout << cur->surname << " | " << cur->department << " | " << cur->salary << endl;
+        cur = cur->next;
+    }
+}
+
+
+void printBackward(Worker* tail) {
+    Worker* cur = tail;
+    while (cur) {
+        cout << cur->surname << " | " << cur->department << " | " << cur->salary << endl;
+        cur = cur->prev;
+    }
+}
+
+
+double calculateAverageSalary(Worker* head) {
+    double sum = 0;
+    int count = 0;
+    Worker* cur = head;
+
+    while (cur) {
+        sum += cur->salary;
+        count++;
+        cur = cur->next;
+    }
+
+    return (count > 0) ? sum / count : 0;
+}
+
+
+void deleteList(Worker*& head) {
+    Worker* cur;
+    while (head) {
+        cur = head;
+        head = head->next;
+        delete cur;
+    }
+}
+
+int main() {
+    Worker *head = NULL, *tail = NULL;
+
+    int n;
+    cout << "Enter number of workers: ";
+    cin >> n;
+
+    string s, d;
+    double sal;
+
+    
+    for (int i = 0; i < n; i++) {
+        cout << "\nWorker " << i + 1 << endl;
+        cout << "Surname: ";
+        cin >> s;
+        cout << "Department: ";
+        cin >> d;
+        cout << "Salary: ";
+        cin >> sal;
+
+        addEnd(head, tail, s, d, sal);
+    }
+
+    double avg = calculateAverageSalary(head);
+    cout << "\nAverage salary: " << avg << endl;
+
+   
+    Worker *highH = NULL, *highT = NULL;
+    Worker *lowH = NULL, *lowT = NULL;
+
+    Worker* cur = head;
+
+  
+    while (cur) {
+        if (cur->salary > avg)
+            addEnd(highH, highT, cur->surname, cur->department, cur->salary);
+        else
+            addEnd(lowH, lowT, cur->surname, cur->department, cur->salary);
+
+        cur = cur->next;
+    }
+
+    
+    cout << "\n--- Higher than average ---\nForward:\n";
+    printForward(highH);
+    cout << "Backward:\n";
+    printBackward(highT);
+
+    cout << "\n--- Lower or equal ---\nForward:\n";
+    printForward(lowH);
+    cout << "Backward:\n";
+    printBackward(lowT);
+
+   
+    cout << "\nAdd new worker to HIGH list:\n";
+    cout << "Surname: ";
+    cin >> s;
+    cout << "Department: ";
+    cin >> d;
+    cout << "Salary: ";
+    cin >> sal;
+
+    addEnd(highH, highT, s, d, sal);
+
+    cout << "\nUpdated HIGH list:\n";
+    printForward(highH);
+
+    
+    deleteList(head);
+    deleteList(highH);
+    deleteList(lowH);
+
+    return 0;
+}
