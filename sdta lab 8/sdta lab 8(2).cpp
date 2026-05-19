@@ -1,0 +1,131 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+struct Course {
+    string name;
+    int hours;
+    int students;
+};
+
+struct Node {
+    Course data;
+    Node* prev;
+    Node* next;
+};
+
+
+void add(Node*& head, Node*& tail, Course c) {
+    Node* newNode = new Node;
+    newNode->data = c;
+    newNode->next = nullptr;
+    newNode->prev = tail;
+
+    if (tail != nullptr)
+        tail->next = newNode;
+    else
+        head = newNode;
+
+    tail = newNode;
+}
+
+
+double countcountAverageStudents(Node* head) {
+    int sum = 0, count = 0;
+    Node* temp = head;
+
+    while (temp != nullptr) {
+        sum += temp->data.students;
+        count++;
+        temp = temp->next;
+    }
+
+    if (count == 0) return 0;
+    return (double)sum / count;
+}
+
+
+void printForward(Node* head) {
+    Node* temp = head;
+    while (temp != nullptr) {
+        cout << temp->data.name << " | "
+             << temp->data.hours << " | "
+             << temp->data.students << endl;
+        temp = temp->next;
+    }
+}
+
+
+void printBackward(Node* tail) {
+    Node* temp = tail;
+    while (temp != nullptr) {
+        cout << temp->data.name << " | "
+             << temp->data.hours << " | "
+             << temp->data.students << endl;
+        temp = temp->prev;
+    }
+}
+
+
+void clearList(Node*& head) {
+    Node* temp;
+    while (head != nullptr) {
+        temp = head;
+        head = head->next;
+        delete temp;
+    }
+}
+
+int main() {
+    Node *head = nullptr, *tail = nullptr;
+    int n;
+
+    cout << "Enter number of courses: ";
+    cin >> n;
+
+    for (int i = 0; i < n; i++) {
+        Course c;
+        cout << "\nCourse " << i + 1 << endl;
+        cout << "Name: ";
+        cin >> c.name;
+        cout << "Hours: ";
+        cin >> c.hours;
+        cout << "Students: ";
+        cin >> c.students;
+
+        add(head, tail, c);
+    }
+
+    double avg = countcountAverageStudents(head);
+    cout << "\ncountAverage students: " << avg << endl;
+
+    Node *headHigh = nullptr, *tailHigh = nullptr;
+    Node *headLow = nullptr, *tailLow = nullptr;
+
+    Node* temp = head;
+    while (temp != nullptr) {
+        if (temp->data.students > avg)
+            add(headHigh, tailHigh, temp->data);
+        else
+            add(headLow, tailLow, temp->data);
+
+        temp = temp->next;
+    }
+
+    cout << "\nCourses ABOVE countAverage (forward):\n";
+    printForward(headHigh);
+    cout << "\nCourses ABOVE countAverage (backward):\n";
+    printBackward(tailHigh);
+
+    cout << "\nCourses BELOW or EQUAL countAverage (forward):\n";
+    printForward(headLow);
+    cout << "\nCourses BELOW or EQUAL countAverage (backward):\n";
+    printBackward(tailLow);
+
+    
+    clearList(head);
+    clearList(headHigh);
+    clearList(headLow);
+
+    return 0;
+}
